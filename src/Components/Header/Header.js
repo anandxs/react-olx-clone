@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import "./Header.css";
 import OlxLogo from "../../assets/OlxLogo";
 import Search from "../../assets/Search";
@@ -11,6 +11,11 @@ import { Link } from "react-router-dom";
 
 function Header() {
 	const { user, setUser } = useContext(AuthContext);
+	const [searchTerm, setSearchTerm] = useState("");
+
+	const handleClick = () => {
+		console.log(searchTerm);
+	};
 
 	const handleLogout = () => {
 		const auth = getAuth();
@@ -28,27 +33,31 @@ function Header() {
 		<div className="headerParentDiv">
 			<div className="headerChildDiv">
 				<div className="brandName">
-					<OlxLogo></OlxLogo>
+					<Link to="/">
+						<OlxLogo />
+					</Link>
 				</div>
 				<div className="placeSearch">
-					<Search></Search>
+					<Search />
 					<input type="text" />
-					<Arrow></Arrow>
+					<Arrow />
 				</div>
 				<div className="productSearch">
 					<div className="input">
 						<input
 							type="text"
 							placeholder="Find car,mobile phone and more..."
+							value={searchTerm}
+							onChange={(e) => setSearchTerm(e.target.value)}
 						/>
 					</div>
-					<div className="searchAction">
-						<Search color="#ffffff"></Search>
+					<div onClick={handleClick} className="searchAction">
+						<Search color="#ffffff" />
 					</div>
 				</div>
 				<div className="language">
 					<span> ENGLISH </span>
-					<Arrow></Arrow>
+					<Arrow />
 				</div>
 				<div className="loginPage">
 					{user ? (
@@ -66,9 +75,9 @@ function Header() {
 					</span>
 				)}
 				<div className="sellMenu">
-					<SellButton></SellButton>
+					<SellButton />
 					<div className="sellMenuContent">
-						<SellButtonPlus></SellButtonPlus>
+						<SellButtonPlus />
 						<span>
 							<Link to="/sell">Sell</Link>
 						</span>

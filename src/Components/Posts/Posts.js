@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 function Posts() {
 	const [products, setProducts] = useState([]);
+	const [latestthree, setLatestThree] = useState([]);
 
 	const { db } = useContext(FirebaseContext);
 
@@ -28,6 +29,30 @@ function Posts() {
 			.catch((error) => {
 				console.log(error);
 			});
+
+		const getLatestThree = async () => {
+			const querySnapshot = await getDocs(collection(db, "products"));
+			const prods = querySnapshot.docs.map((doc) => ({
+				id: doc.id,
+				...doc.data(),
+			}));
+
+			prods.sort((a, b) => {
+				const d1 = new Date(a.createdAt);
+				const d2 = new Date(b.createdAt);
+				if (d1 > d2) return -1;
+				else if (d1 == d2) return 0;
+				return 1;
+			});
+
+			if (prods.length < 4) return prods;
+
+			return prods.slice(0, 4);
+		};
+
+		getLatestThree()
+			.then((x) => setLatestThree(x))
+			.catch((err) => console.log(err.message));
 	}, []);
 
 	const handleClick = (product) => {
@@ -77,22 +102,30 @@ function Posts() {
 					<span>Fresh recommendations</span>
 				</div>
 				<div className="cards">
-					<div className="card">
-						<div className="favorite">
-							<Heart />
-						</div>
-						<div className="image">
-							<img src="../../../Images/R15V3.jpg" alt="" />
-						</div>
-						<div className="content">
-							<p className="rate">&#x20B9; 250000</p>
-							<span className="kilometer">Two Wheeler</span>
-							<p className="name"> YAMAHA R15V3</p>
-						</div>
-						<div className="date">
-							<span>10/5/2021</span>
-						</div>
-					</div>
+					{latestthree?.length !== 0 ? (
+						latestthree.map((product) => {
+							return (
+								<div className="card">
+									<div className="favorite">
+										<Heart />
+									</div>
+									<div className="image">
+										<img src={product.url} alt="" />
+									</div>
+									<div className="content">
+										<p className="rate">&#x20B9; {product.price}</p>
+										<span className="kilometer">{product.category}</span>
+										<p className="name">{product.name}</p>
+									</div>
+									<div className="date">
+										<span>{product.createdAt}</span>
+									</div>
+								</div>
+							);
+						})
+					) : (
+						<p>No products to list</p>
+					)}
 				</div>
 			</div>
 		</div>
