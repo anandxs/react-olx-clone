@@ -18,6 +18,7 @@ function View() {
 
 	const [product, setProduct] = useState();
 	const [seller, setSeller] = useState();
+	const [error, setError] = useState();
 
 	const getProduct = async () => {
 		const docSnap = await getDoc(doc(db, "products", productId));
@@ -26,6 +27,8 @@ function View() {
 		if (docSnap.exists()) {
 			setProduct(data);
 			return data.userId;
+		} else {
+			setError("Could not find product");
 		}
 	};
 
@@ -41,40 +44,51 @@ function View() {
 	};
 
 	useEffect(() => {
-		getProduct().then((userId) => {
-			getSeller(userId)
-				.then((user) => {
-					setSeller(user);
-				})
-				.catch((err) => {
-					console.log("could not find seller");
-				});
-		});
+		getProduct()
+			.then((userId) => {
+				getSeller(userId)
+					.then((user) => {
+						setSeller(user);
+					})
+					.catch((err) => {
+						console.log("could not find seller");
+					});
+			})
+			.catch((error) => {
+				console.log(error.message);
+			});
 	}, []);
 
 	return (
-		product && (
-			<div className="viewParentDiv">
-				<div className="imageShowDiv">
-					<img src={product?.url} alt="" />
+		<>
+			{error !== "" && (
+				<div className="viewParentDiv">
+					<h1>{error}</h1>
 				</div>
-				<div className="rightSection">
-					<div className="productDetails">
-						<p>&#x20B9; {product?.price}</p>
-						<span>{product?.name}</span>
-						<p>{product?.category}</p>
-						<span>{product?.createdAt}</span>
+			)}
+			{product && (
+				<div className="viewParentDiv">
+					<div className="imageShowDiv">
+						<img src={product?.url} alt="" />
 					</div>
-					{seller && (
-						<div className="contactDetails">
-							<h3>Seller Details</h3>
-							<p>Username: {seller.username}</p>
-							<p>Phone: {seller.phoneNumber}</p>
+					<div className="rightSection">
+						<div className="productDetails">
+							<p>&#x20B9; {product?.price}</p>
+							<span>{product?.itemName}</span>
+							<p>{product?.category}</p>
+							<span>{product?.createdAt}</span>
 						</div>
-					)}
+						{seller && (
+							<div className="contactDetails">
+								<h3>Seller Details</h3>
+								<p>Username: {seller.username}</p>
+								<p>Phone: {seller.phoneNumber}</p>
+							</div>
+						)}
+					</div>
 				</div>
-			</div>
-		)
+			)}
+		</>
 	);
 }
 export default View;
