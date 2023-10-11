@@ -18,6 +18,7 @@ function Signup() {
 	const [phone, setPhone] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
+	const [disableButton, setDisableButton] = useState(false);
 
 	const { db } = useContext(FirebaseContext);
 	const { user } = useContext(AuthContext);
@@ -47,6 +48,9 @@ function Signup() {
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		setError("");
+		setDisableButton(true);
+
+		console.log("btn clicked");
 
 		checkUsername()
 			.then((x) => {
@@ -69,7 +73,10 @@ function Signup() {
 			exit = true;
 		}
 
-		if (exit) return;
+		if (exit) {
+			setDisableButton(false);
+			return;
+		}
 
 		const auth = getAuth();
 
@@ -84,14 +91,18 @@ function Signup() {
 							username: username,
 							phoneNumber: phone,
 						});
+
+						setDisableButton(false);
 						navigate("/login");
 					})
 					.catch((err) => {
 						console.log(err.message);
+						setDisableButton(false);
 					});
 			})
 			.catch((error) => {
 				setError(error.message);
+				setDisableButton(false);
 			});
 	};
 
@@ -150,7 +161,13 @@ function Signup() {
 					/>
 					<br />
 					<br />
-					<button>Signup</button>
+					{!disableButton ? (
+						<button type="submit">Signup</button>
+					) : (
+						<button type="submit" disabled>
+							Loading...
+						</button>
+					)}
 				</form>
 				<Link to="/login">Login</Link>
 			</div>
