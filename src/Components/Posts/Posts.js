@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 function Posts() {
 	const [products, setProducts] = useState([]);
-	const [latestthree, setLatestThree] = useState([]);
+	const [latestfour, setLatestThree] = useState([]);
 
 	const { db } = useContext(FirebaseContext);
 
@@ -102,10 +102,14 @@ function Posts() {
 					<span>Fresh recommendations</span>
 				</div>
 				<div className="cards">
-					{latestthree?.length !== 0 ? (
-						latestthree.map((product) => {
+					{latestfour?.length !== 0 ? (
+						latestfour.map((product) => {
 							return (
-								<div key={product.id} className="card">
+								<div
+									onClick={() => handleClick(product)}
+									key={product.id}
+									className="card"
+								>
 									<div className="favorite">
 										<Heart />
 									</div>
