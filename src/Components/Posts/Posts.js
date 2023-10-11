@@ -84,7 +84,7 @@ function Posts() {
 									<div className="content">
 										<p className="rate">&#x20B9; {product.price}</p>
 										<span className="kilometer">{product.category}</span>
-										<p className="name">{product.name}</p>
+										<p className="name">{product.itemName}</p>
 									</div>
 									<div className="date">
 										<span>{product.createdAt}</span>
@@ -115,7 +115,7 @@ function Posts() {
 									<div className="content">
 										<p className="rate">&#x20B9; {product.price}</p>
 										<span className="kilometer">{product.category}</span>
-										<p className="name">{product.name}</p>
+										<p className="name">{product.itemName}</p>
 									</div>
 									<div className="date">
 										<span>{product.createdAt}</span>
