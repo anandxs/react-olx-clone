@@ -12,6 +12,7 @@ const Create = () => {
 	const [price, setPrice] = useState("");
 	const [image, setImage] = useState("");
 	const [error, setError] = useState("");
+	const [disableButton, setDisableButton] = useState(false);
 
 	const { user } = useContext(AuthContext);
 	const { db } = useContext(FirebaseContext);
@@ -24,8 +25,8 @@ const Create = () => {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-
 		setError("");
+		setDisableButton(true);
 
 		let exit = false;
 
@@ -61,7 +62,10 @@ const Create = () => {
 			exit = true;
 		}
 
-		if (exit) return;
+		if (exit) {
+			setDisableButton(false);
+			return;
+		}
 
 		const newId = crypto.randomUUID();
 
@@ -89,15 +93,20 @@ const Create = () => {
 							});
 							console.log("added to firestore");
 							navigate("/");
+							setDisableButton(false);
 						} catch (error) {
 							console.log("could not add to firestore");
+							setDisableButton(false);
 						}
 					})
 					.catch((err) => {
 						console.log("could not get url");
+						setDisableButton(false);
 					});
 			})
-			.catch((err) => {});
+			.catch((err) => {
+				setDisableButton(false);
+			});
 	};
 
 	return (
@@ -158,7 +167,13 @@ const Create = () => {
 						onChange={(e) => setImage(e.target.files[0])}
 					/>
 					<br />
-					<button className="uploadBtn">Upload and Create</button>
+					{!disableButton ? (
+						<button className="uploadBtn">Upload and Create</button>
+					) : (
+						<button className="uploadBtn" disabled>
+							Loading...
+						</button>
+					)}
 				</form>
 			</div>
 		</>
