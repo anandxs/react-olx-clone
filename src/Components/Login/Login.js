@@ -13,6 +13,7 @@ function Login() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [status, setStatus] = useState("");
+	const [disableButton, setDisableButton] = useState(false);
 
 	const navigate = useNavigate();
 
@@ -20,7 +21,6 @@ function Login() {
 		const auth = getAuth();
 		onAuthStateChanged(auth, (u) => {
 			if (u) {
-				console.log("user online");
 				navigate("/");
 			}
 		});
@@ -30,15 +30,21 @@ function Login() {
 		event.preventDefault();
 		setStatus("");
 
+		console.log("clicked");
+
+		setDisableButton(true);
+
 		const auth = getAuth();
 
 		signInWithEmailAndPassword(auth, email, password)
 			.then((userCredentials) => {
 				const user = userCredentials.user;
+				setDisableButton(true);
 				navigate("/");
 			})
 			.catch((error) => {
 				setStatus("Invalid credentials");
+				setDisableButton(false);
 			});
 	};
 
@@ -73,7 +79,9 @@ function Login() {
 					/>
 					<br />
 					<br />
-					<button>Login</button>
+					<button type="submit" disabled={disableButton}>
+						{disableButton ? "Loading..." : "Login"}
+					</button>
 				</form>
 				<Link to="/signup">Signup</Link>
 			</div>

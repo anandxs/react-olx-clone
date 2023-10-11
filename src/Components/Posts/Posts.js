@@ -105,7 +105,7 @@ function Posts() {
 					{latestthree?.length !== 0 ? (
 						latestthree.map((product) => {
 							return (
-								<div className="card">
+								<div key={product.id} className="card">
 									<div className="favorite">
 										<Heart />
 									</div>

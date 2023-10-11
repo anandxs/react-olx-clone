@@ -36,3 +36,6 @@
     cursor: pointer;
   }
   
+button:disabled {
+    background-color: #002f34;
+}
